@@ -1,4 +1,4 @@
-# Postgres-Docker
+# Postdock-DockerSwarm
 This Project is heavily based on Postdock (https://github.com/paunin/PostDock) and I just maked it Suitable for Docker Swarm and docker-compose with postgis module.
 
 Thanks to (https://github.com/paunin) for his great work
