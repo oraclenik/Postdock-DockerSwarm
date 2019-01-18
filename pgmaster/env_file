@@ -1,0 +1,17 @@
+NODE_ID=1
+NODE_NAME=node1
+CLUSTER_NODE_NETWORK_NAME=pgmaster
+PARTNER_NODES="pgmaster,pgslave1,pgslave2"
+REPLICATION_PRIMARY_HOST=pgmaster
+NODE_PRIORITY=100
+SSH_ENABLE=1
+CLEAN_OVER_REWIND=0a
+CONFIGS_DELIMITER_SYMBOL=;
+CONFIGS=listen_addresses:'*';max_replication_slots:5
+CLUSTER_NAME=pg_cluster
+REPLICATION_DB=replication_db
+REPLICATION_USER=replication_user
+REPLICATION_PASSWORD=replication_pass
+POSTGRES_PASSWORD=postgre_pass
+POSTGRES_USER=postgre_user
+POSTGRES_DB=postgre_db

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+export REPMGR_CONFIG_FILE="/etc/repmgr.conf"
+touch $REPMGR_CONFIG_FILE
+
+
+# repmgr3                   | repmgr4
+# ====================================================
+# cluster                   | -
+# node                      | node_id
+# loglevel                  | log_level
+# logfacility	            | log_facility
+# logfile                   | log_file
+# barman_server             | barman_host
+# master_reponse_timeout    | async_query_timeout
+# -                         | location
+# -                         | degraded_monitoring_timeout
+
+if [ "$REPMGR_MAJOR" == "3" ]; then
+    PRELOAD_REPMGR_LIB="repmgr_funcs"
+    # deprecated for v4 params
+    echo "cluster=$CLUSTER_NAME" >> $REPMGR_CONFIG_FILE
+elif [ "$REPMGR_MAJOR" == "4" ]; then  
+    PRELOAD_REPMGR_LIB="repmgr"
+    # new required params
+    echo "degraded_monitoring_timeout=$REPMGR_DEGRADED_MONITORING_TIMEOUT" >> $REPMGR_CONFIG_FILE
+    echo "data_directory=$PGDATA" >> $REPMGR_CONFIG_FILE
+    echo "async_query_timeout=$MASTER_RESPONSE_TIMEOUT" >> $REPMGR_CONFIG_FILE
+fi
+
+if [[ `echo $CONFIGS | grep shared_preload_libraries | wc -l | tr -d ' '` == "0" ]]; then
+    if [ "$CONFIGS" != "" ]; then
+        DELIMITER="${CONFIGS_DELIMITER_SYMBOL}"
+    fi
+    NEW_CONFIGS="${CONFIGS}${DELIMITER}shared_preload_libraries${CONFIGS_ASSIGNMENT_SYMBOL}'${PRELOAD_REPMGR_LIB}'"
+else
+    NEW_CONFIGS=`echo $CONFIGS | sed -e "s/\(shared_preload_libraries${CONFIGS_ASSIGNMENT_SYMBOL}'\{0,1\}\)/\1${PRELOAD_REPMGR_LIB},/g"`
+fi
+
+export CONFIGS="$NEW_CONFIGS"
+
+function set_repmgr_upstream_node {
+    if [ "$REPMGR_MAJOR" == "3" ]; then
+        echo "upstream_node=$REPLICATION_UPSTREAM_NODE_ID" >> $REPMGR_CONFIG_FILE
+    elif [ "$REPMGR_MAJOR" == "4" ]; then
+        export REPMGR_START_OPTIONS="$REPMGR_START_OPTIONS --upstream-node-id=$REPLICATION_UPSTREAM_NODE_ID"
+    fi
+}

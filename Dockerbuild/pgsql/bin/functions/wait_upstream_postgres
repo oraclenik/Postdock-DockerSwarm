@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+echo ">>> Waiting for upstream postgres server..."
+wait_db_schema $CURRENT_REPLICATION_PRIMARY_HOST $REPLICATION_PRIMARY_PORT $REPLICATION_USER $REPLICATION_PASSWORD $REPLICATION_DB $(get_repmgr_schema) 300

@@ -1,0 +1,15 @@
+docker service create  \
+--constraint "node.labels.pgbackup == true" \
+--endpoint-mode vip                        \
+--log-driver json-file                     \
+--log-opt max-size=32m                     \
+--log-opt max-file=16                      \
+--mount "type=bind,source=/opt/postdock/pgbackup/backups,destination=/var/backups"                        \
+--mount "type=bind,source=/opt/postdock/pgbackup/ssh,destination=/home/postgres/.ssh/keys"                        \
+--mode replicated                        \
+--name pgbackup                        \
+--network cluster-network                        \
+--replicas 1                        \
+--env-file /opt/postdock/pgbackup/env_file \
+--with-registry-auth \
+--restart-condition any postdock-barman-2.4-postgres-10

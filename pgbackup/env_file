@@ -1,0 +1,8 @@
+REPLICATION_USER=replication_user
+REPLICATION_PASSWORD=replication_pass
+REPLICATION_HOST=pgmaster
+POSTGRES_PASSWORD=monkey_pass
+POSTGRES_USER=monkey_user
+POSTGRES_DB=monkey_db
+SSH_ENABLE=1
+BACKUP_SCHEDULE="*/30 */5 * * *"

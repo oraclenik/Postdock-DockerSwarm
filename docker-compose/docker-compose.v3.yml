@@ -1,0 +1,112 @@
+---
+version: "3.3"
+services:
+  pgmaster:
+    image: postdock-postgres-10-repmgr-4.0
+    environment:
+    - NODE_ID=1
+    - NODE_NAME=node1
+    - CLUSTER_NODE_NETWORK_NAME=pgmaster
+    - PARTNER_NODES="pgmaster,pgslave1,pgslave2"
+    - REPLICATION_PRIMARY_HOST=pgmaster
+    - NODE_PRIORITY=100
+    - SSH_ENABLE=1
+    - POSTGRES_PASSWORD=monkey_pass
+    - POSTGRES_USER=monkey_user
+    - POSTGRES_DB=monkey_db
+    - CLEAN_OVER_REWIND=0a
+    - CONFIGS_DELIMITER_SYMBOL=;
+    - CONFIGS="listen_addresses:'*';max_replication_slots:5"
+    - CLUSTER_NAME=pg_cluster
+    - REPLICATION_DB=replication_db
+    - REPLICATION_USER=replication_user
+    - REPLICATION_PASSWORD=replication_pass
+    ports:
+    - 5422:5432
+    volumes:
+    - pgmaster:/var/lib/postgresql/data
+    networks:
+    - postdock
+
+  pgslave1:
+    image: postdock-postgres-10-repmgr-4.0
+    environment:
+    - NODE_ID=2
+    - NODE_NAME=node2
+    - CLUSTER_NODE_NETWORK_NAME=pgslave1
+    - SSH_ENABLE=1
+    - PARTNER_NODES="pgmaster,pgslave1,pgslave2"
+    - REPLICATION_PRIMARY_HOST=pgmaster
+    - CLEAN_OVER_REWIND=1
+    - CONFIGS_DELIMITER_SYMBOL=;
+    - CONFIGS="max_replication_slots:10"
+    ports:
+    - 5441:5432
+    volumes:
+    - pgslave1:/var/lib/postgresql/data
+    networks:
+    - postdock
+
+  pgslave2:
+    image: postdock-postgres-10-repmgr-4.0
+    environment:
+    - NODE_ID=4
+    - NODE_NAME=node4
+    - CLUSTER_NODE_NETWORK_NAME=pgslave2
+    - PARTNER_NODES="pgmaster,pgslave1,pgslave2"
+    - REPLICATION_PRIMARY_HOST=pgmaster
+    - NODE_PRIORITY=200
+    - CLEAN_OVER_REWIND=1
+    - CONFIGS_DELIMITER_SYMBOL=;
+    - CONFIGS="listen_addresses:'*'"
+    ports:
+    - 5443:5432
+    volumes:
+    - pgslave2:/var/lib/postgresql/data
+    networks:
+    - postdock
+
+  backup:
+    image: postdock-barman-2.4-postgres-10
+    environment:
+    - REPLICATION_USER=replication_user
+    - REPLICATION_PASSWORD=replication_pass
+    - REPLICATION_HOST=pgmaster
+    - POSTGRES_PASSWORD=monkey_pass
+    - POSTGRES_USER=monkey_user
+    - POSTGRES_DB=monkey_db
+    - SSH_ENABLE=1
+    - BACKUP_SCHEDULE="*/30 */5 * * *"
+    volumes:
+    - backup:/var/backups
+    networks:
+    - postdock
+
+  pgpool:
+    image: postdock-pgpool-3.7-postgres-10
+    environment:
+    - PCP_USER=pcp_user
+    - PCP_PASSWORD=pcp_pass
+    - WAIT_BACKEND_TIMEOUT=60
+    - CHECK_USER=monkey_user
+    - CHECK_PASSWORD=monkey_pass
+    - CHECK_PGCONNECT_TIMEOUT=3
+    - SSH_ENABLE=1
+    - DB_USERS=monkey_user:monkey_pass
+    - BACKENDS="0:pgmaster:5432:1:/var/lib/postgresql/data:ALLOW_TO_FAILOVER,1:pgslave1::::,3:pgslave2::::,2:pgslave2::::"
+    - REQUIRE_MIN_BACKENDS=3
+    - CONFIGS="num_init_children:250,max_pool:4"
+    ports:
+    - 5430:5432
+    - 9898:9898
+    networks:
+    - postdock
+
+networks:
+  postdock:
+
+volumes:
+  pgmaster:
+  pgslave1:
+  pgslave2:
+  backup:

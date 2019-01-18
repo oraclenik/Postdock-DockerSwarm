@@ -1,0 +1,15 @@
+PCP_USER=pcp_user
+PCP_PASSWORD=pcp_pass
+WAIT_BACKEND_TIMEOUT=60
+CHECK_USER=postgre_user
+CHECK_PASSWORD=postgre_pass
+CHECK_PGCONNECT_TIMEOUT=3
+SSH_ENABLE=1
+DB_USERS=postgre_user:postgre_pass
+BACKENDS=0:pgmaster:5432:1:/var/lib/postgresql/data:ALLOW_TO_FAILOVER,1:pgslave1::::,3:pgslave2::::,2:pgslave2::::
+REQUIRE_MIN_BACKENDS=3
+CONFIGS=num_init_children:250,max_pool:4
+REPLICATION_PASSWORD=replication_pass
+POSTGRES_PASSWORD=postgre_pass
+POSTGRES_USER=postgre_user
+POSTGRES_DB=postgre_db

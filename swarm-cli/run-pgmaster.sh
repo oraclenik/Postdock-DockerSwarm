@@ -1,0 +1,15 @@
+docker service create  \
+--constraint "node.labels.pgtype == primary" \
+--endpoint-mode vip                        \
+--log-driver json-file                     \
+--log-opt max-size=32m                     \
+--log-opt max-file=16                      \
+--mount "type=bind,source=/opt/postdock/pgmaster/pgdata,destination=/var/lib/postgresql/data"                        \
+--mount "type=bind,source=/opt/postdock/pgmaster/ssh,destination=/home/postgres/.ssh/keys"                        \
+--mode replicated                        \
+--name pgmaster                        \
+--network cluster-network                        \
+--replicas 1                        \
+--env-file /opt/postdock/pgmaster/env_file \
+--with-registry-auth \
+--restart-condition any postdock-postgres-10-repmgr-4.0-postgis2
