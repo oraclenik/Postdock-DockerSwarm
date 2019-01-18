@@ -3,7 +3,8 @@ This Project is heavily based on Postdock (https://github.com/paunin/PostDock) t
 I just maked it Suitable for Docker Swarm and docker-compose with postgis module.
 
 
-Installing:
+## Installing:
+
 1- Install Docker-ce
 
 2- create your swarm cluster
