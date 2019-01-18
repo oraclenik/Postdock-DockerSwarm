@@ -14,7 +14,7 @@ Thanks to (https://github.com/paunin) for his great work
 
 4- Set Swarm node tags (based on swarm-cli scripts, for example set pgtype == primary for the node that you want to use as Master Node)
 
-5- Use swarm-cli on Swarm Manager Node and Run pgmaster (./swarm-cli/run-pgmaster.sh) then pgslave1 and pgsalve2c then pgpool and pgbackup
+5- Use swarm-cli on Swarm Manager Node and Run pgmaster (./opt/swarm-cli/run-pgmaster.sh) then pgslave1 and pgsalve2c then pgpool and pgbackup
 
 6- Done.
 
