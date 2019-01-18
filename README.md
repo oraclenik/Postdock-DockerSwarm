@@ -5,7 +5,7 @@ I just maked it Suitable for Docker Swarm and docker-compose with postgis module
 
 ## Installing:
 
-1- Install Docker-ce
+1- Install Docker-ce on all of the participate nodes
 
 2- create your swarm cluster
 
