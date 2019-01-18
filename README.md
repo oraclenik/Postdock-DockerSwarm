@@ -16,13 +16,13 @@ Thanks to (https://github.com/paunin) for his great work
 
 5- Run scripts in the swarm-cli directory on Swarm Manager Node:
 
-    -Run pgmaster (./opt/swarm-cli/run-pgmaster.sh)
+    -Run pgmaster ./opt/swarm-cli/run-pgmaster.sh
     
-    - then pgslave1
+    - then pgslave1 ./opt/swarm-cli/run-pgslave1.sh
     
-    - then pgsalve2
+    - then pgsalve2 ./opt/swarm-cli/run-pgslave2.sh
     
-    - then pgpool and pgbackup
+    - then pgpool and pgbackup  ./opt/swarm-cli/run-pgpool.sh  and ./opt/swarm-cli/run-pgbackup.sh
     
     
 6- Done.
